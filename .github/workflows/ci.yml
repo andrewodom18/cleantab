@@ -58,3 +58,4 @@ jobs:
           name: cleantab-chrome
           path: .output/*-chrome.zip
           if-no-files-found: error
+          include-hidden-files: true
