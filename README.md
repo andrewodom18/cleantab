@@ -69,7 +69,7 @@ npm run test:e2e
 npm run zip
 ```
 
-The loaded-browser tests use a real unpacked production build. On macOS, two native-discard tests are skipped because Chromium for Testing 151 crashes inside its `tabs.discard` implementation; the same paths run on Linux CI and have local mocked integration coverage.
+The loaded-browser tests use a real unpacked production build for the popup, settings, preview, automatic copy cleaning, and dirty-form reporting. Native discard is covered by API-level integration tests and the [real-Chrome release checklist](docs/RELEASE_CHECKLIST.md) because Chromium terminates DevTools-controlled tabs during automated discard tests.
 
 ## Architecture
 
