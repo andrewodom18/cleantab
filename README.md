@@ -1,84 +1,95 @@
 # CleanTab
 
-CleanTab is a privacy-first browser extension that removes tracking parameters from URLs and suspends inactive tabs to reduce clutter and resource usage.
+CleanTab is a privacy-first Chrome extension that removes known tracking parameters from URLs and safely suspends tabs you are not using.
 
-## Product vision
+Everything happens inside your browser. CleanTab has no account, server, analytics, ads, telemetry, or browsing-history database.
 
-Give users simple, local browser controls without collecting browsing history or sending URLs to a remote service.
+## Features
 
-## URL Cleaner
+- Preview and copy a cleaned version of the current page URL.
+- Clean page, link, or selected URLs from the right-click menu.
+- Optionally clean copied URLs automatically when the copied text is exactly one HTTP or HTTPS URL.
+- Suspend the current tab or other eligible tabs using Chrome's native discard feature.
+- Optionally suspend inactive tabs after 5 minutes to 24 hours.
+- Always protect active, pinned, audible, browser-internal, excluded-domain, and known unsaved-form tabs.
+- Configure separate URL-cleaning and suspension domain exclusions.
+- Add custom parameter removal and preservation rules.
+- Follow the system appearance or use a light or dark theme.
 
-- Remove common tracking parameters such as campaign identifiers.
-- Clean URLs when copied.
-- Clean URLs when opened.
-- Add a manual “Clean URL” context-menu action.
-- Show a before-and-after preview.
-- Maintain customizable allowlists and per-site rules.
-- Preserve parameters required for login, search, checkout, or referral functionality.
-- Display which parameters were removed.
+## Install
 
-## Tab Suspender
+### GitHub release
 
-- Suspend inactive tabs after a configurable period.
-- Exclude pinned tabs.
-- Exclude tabs playing audio.
-- Exclude tabs with unsaved form data.
-- Exclude specific domains.
-- Exclude active downloads.
-- Add “Suspend this tab” and “Suspend all other tabs.”
-- Restore the original tab when clicked.
-- Group suspended tabs by browser window.
-- Show estimated memory savings when available.
+1. Download `CleanTab-v1.0.0-chrome.zip` from the [latest release](https://github.com/andrewodom18/cleantab/releases/latest).
+2. Extract the ZIP to a permanent folder.
+3. Open `chrome://extensions` in Chrome.
+4. Enable **Developer mode**.
+5. Select **Load unpacked** and choose the extracted folder.
 
-## MVP
+Chrome Web Store submission materials are ready, but the initial distribution is through GitHub Releases.
 
-1. Local-only settings.
-2. URL cleaning on copy.
-3. Manual tab suspension.
-4. Automatic suspension timer.
-5. Domain allowlist and blocklist.
-6. Options page.
-7. Dark and light themes.
-8. Chrome-compatible release, followed by Firefox compatibility.
+## Permissions
 
-## Privacy principles
+| Permission | Why CleanTab uses it |
+| --- | --- |
+| Storage | Save only your local settings and temporary tab safety state. |
+| Tabs | Read tab state, clean the current page URL, and request native tab suspension. |
+| Alarms | Check inactivity on a one-minute local schedule when automatic suspension is enabled. |
+| Context menus | Offer manual URL cleaning for pages, links, and selections. |
+| Scripting (optional) | Detect copied URLs and unsaved form changes only after you enable automation. |
+| HTTP/HTTPS pages (optional) | Run the optional automation on normal websites. This is requested once from Settings. |
 
-- No URL collection.
-- No analytics by default.
-- No external API requirement.
-- All URL rules are processed locally.
-- Request the minimum browser permissions needed.
-- Explain every permission in the settings interface.
+Manual URL cleaning and single-tab suspension work without all-site access. Removing optional website access immediately turns automatic cleaning and suspension off.
 
-## Technical direction
+See [Permissions](docs/PERMISSIONS.md) and [Privacy](PRIVACY.md) for the full explanation.
 
-Use the cross-browser WebExtensions model with a small background service, an options page, and local extension storage. Keep URL rules in a versioned local ruleset so they can be tested independently from the browser UI.
+## Safety behavior
 
-Tab suspension must have a graceful fallback because browsers expose different levels of tab-discard support:
+- CleanTab removes a conservative list of known marketing identifiers and does not remove generic parameters such as `id`, `q`, `page`, or `ref`.
+- Keep rules override built-in and custom removal rules.
+- URL cleaning never rewrites navigation or changes the page you are viewing.
+- Suspended tabs remain in the tab bar and reload through Chrome when selected.
+- Suspending the active tab first creates an adjacent tab; if Chrome refuses the discard, CleanTab restores the original state.
+- Automatic suspension treats missing activity information as recent and refuses to act.
 
-1. Use the browser’s native discard mechanism when supported.
-2. Otherwise replace the page with a local suspended-tab page.
-3. Restore the original URL only when the user requests it.
+## Development
 
-## Future features
+Requirements: Node.js 22.13 or newer and Chrome/Chromium.
 
-- Sync settings between browsers.
-- Tab sleeping based on memory pressure.
-- Tab groups with saved sessions.
-- Automatic URL cleaning for shared links.
-- Temporary tab expiration.
-- Reading-later mode.
-- Tab usage statistics.
-- Import and export of custom URL rules.
+```bash
+npm ci
+npm run dev
+```
 
-## Planned build order
+Useful checks:
 
-1. URL parsing and cleaning rules.
-2. Unit tests for safe parameter removal.
-3. Copy interception and manual clean action.
-4. Settings and allowlists.
-5. Manual tab suspension.
-6. Automatic suspension rules.
-7. Restore flow and exclusions.
-8. Cross-browser testing and packaging.
+```bash
+npm run check
+npm run test:e2e
+npm run zip
+```
 
+The loaded-browser tests use a real unpacked production build. On macOS, two native-discard tests are skipped because Chromium for Testing 151 crashes inside its `tabs.discard` implementation; the same paths run on Linux CI and have local mocked integration coverage.
+
+## Architecture
+
+CleanTab uses WXT, TypeScript, Manifest V3, and browser-native HTML/CSS. Pure URL and suspension rules live separately from browser APIs so they can be tested without a browser. Settings persist in `storage.local`; tab timestamps, dirty-form flags, and context-menu preview URLs use session-only storage.
+
+See [Architecture](docs/ARCHITECTURE.md) for the data flow and safety boundaries.
+
+## Troubleshooting
+
+- **A URL was not changed:** it may already be clean, use an excluded domain, or contain a parameter CleanTab intentionally preserves.
+- **A tab stayed open:** active, pinned, audible, protected, excluded, dirty, or recently used tabs are intentionally skipped.
+- **Automation turned off:** Chrome website access may have been declined or removed. Open CleanTab Settings to grant it again.
+- **The extension disappeared after moving files:** unpacked extensions must remain in the folder selected during installation.
+
+## Browser support
+
+Version 1.0.0 targets current Chrome releases on macOS, Windows, and Linux. The browser API layer is written for a future Firefox build, but Firefox is not part of this release.
+
+## Contributing and security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a change. Report vulnerabilities privately using the process in [SECURITY.md](SECURITY.md).
+
+CleanTab is available under the [MIT License](LICENSE).
