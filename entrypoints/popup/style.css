@@ -2,13 +2,12 @@
 
 body {
   width: 390px;
-  min-height: 560px;
 }
 
 .popup-shell {
   display: grid;
-  gap: 12px;
-  padding: 16px;
+  gap: 10px;
+  padding: 12px;
 }
 
 .app-header,
@@ -51,17 +50,17 @@ h2 {
 .card {
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 15px;
+  padding: 13px;
   background: var(--bg);
   box-shadow: 0 1px 0 rgba(25, 30, 38, 0.02);
 }
 
 .url-result {
-  min-height: 96px;
-  margin: 13px 0 11px;
+  min-height: 84px;
+  margin: 11px 0 9px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 11px;
+  padding: 10px;
   background: var(--surface);
 }
 
@@ -80,7 +79,7 @@ h2 {
   line-height: 1.45;
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
 }
 
 .removed {
@@ -103,7 +102,7 @@ h2 {
 }
 
 .section-copy {
-  margin: 10px 0 12px;
+  margin: 8px 0 10px;
   color: var(--muted);
   font-size: 12px;
   line-height: 1.45;
@@ -123,7 +122,7 @@ h2 {
 
 .permission-strip {
   border-radius: 12px;
-  padding: 11px 12px;
+  padding: 9px 10px;
   background: var(--surface);
 }
 

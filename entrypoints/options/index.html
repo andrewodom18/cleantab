@@ -32,28 +32,10 @@
             </div>
             <label class="switch-row" for="automatic-copy">
               <span>
-                <strong>Clean copied URLs</strong>
+                <strong>Automatically clean copied URLs</strong>
                 <small>Only when the copied text is exactly one URL</small>
               </span>
-              <input id="automatic-copy" type="checkbox" />
-            </label>
-          </div>
-
-          <div class="field-grid">
-            <label>
-              <span>Excluded domains</span>
-              <small>One domain per line. Subdomains are included.</small>
-              <textarea id="cleaner-domains" rows="4" placeholder="example.com"></textarea>
-            </label>
-            <label>
-              <span>Additional parameters to remove</span>
-              <small>One name per line, such as campaign_id.</small>
-              <textarea id="remove-parameters" rows="4" placeholder="campaign_id"></textarea>
-            </label>
-            <label>
-              <span>Parameters to always keep</span>
-              <small>Keep rules override built-in and custom removal.</small>
-              <textarea id="keep-parameters" rows="4" placeholder="utm_source"></textarea>
+              <input id="automatic-copy" type="checkbox" role="switch" />
             </label>
           </div>
         </section>
@@ -66,35 +48,66 @@
             </div>
             <label class="switch-row" for="automatic-suspension">
               <span>
-                <strong>Suspend inactive tabs</strong>
+                <strong>Automatically suspend inactive tabs</strong>
                 <small>Never suspends active, pinned, audible, or dirty tabs</small>
               </span>
-              <input id="automatic-suspension" type="checkbox" />
+              <input id="automatic-suspension" type="checkbox" role="switch" />
             </label>
           </div>
 
+          <div class="inline-setting">
+            <label for="inactivity-minutes">
+              <span>Suspend after</span>
+              <small>Choose between 5 minutes and 24 hours.</small>
+            </label>
+            <div class="number-field">
+              <input id="inactivity-minutes" type="number" min="5" max="1440" step="1" inputmode="numeric" />
+              <span>minutes</span>
+            </div>
+          </div>
+        </section>
+
+        <details class="settings-card advanced-card">
+          <summary>
+            <span>
+              <span class="eyebrow">Advanced</span>
+              <strong>Exceptions and custom rules</strong>
+            </span>
+            <span class="advanced-meta">
+              <span>Optional</span>
+              <span class="chevron" aria-hidden="true">⌄</span>
+            </span>
+          </summary>
+
           <div class="field-grid two-column">
             <label>
-              <span>Inactive for</span>
-              <small>Between 5 minutes and 24 hours.</small>
-              <div class="number-field">
-                <input id="inactivity-minutes" type="number" min="5" max="1440" step="1" inputmode="numeric" />
-                <span>minutes</span>
-              </div>
+              <span>Do not clean these domains</span>
+              <small>One domain per line. Subdomains are included.</small>
+              <textarea id="cleaner-domains" rows="4" placeholder="checkout.example.com"></textarea>
             </label>
             <label>
               <span>Never suspend these domains</span>
               <small>One domain per line. Subdomains are included.</small>
               <textarea id="suspender-domains" rows="4" placeholder="music.example.com"></textarea>
             </label>
+            <label>
+              <span>Additional parameters to remove</span>
+              <small>One name per line, such as campaign_id.</small>
+              <textarea id="remove-parameters" rows="4" placeholder="campaign_id"></textarea>
+            </label>
+            <label>
+              <span>Parameters to always keep</span>
+              <small>Keep rules override built-in and custom removal.</small>
+              <textarea id="keep-parameters" rows="4" placeholder="utm_source"></textarea>
+            </label>
           </div>
-        </section>
+        </details>
 
         <section class="settings-card permission-card" aria-labelledby="access-heading">
           <div>
             <p class="eyebrow">Optional permission</p>
             <h2 id="access-heading">Website access</h2>
-            <p>Automatic cleaning and unsaved-form protection need access to HTTP and HTTPS pages. Chrome asks once when you turn either feature on. CleanTab processes page information locally and does not keep URL history.</p>
+            <p>Chrome asks once when you turn on an automatic feature. Website access powers copied-link cleaning and unsaved-form protection. CleanTab never sends or keeps your browsing history.</p>
           </div>
           <div class="access-actions">
             <span id="permission-state" class="access-state">Checking access…</span>

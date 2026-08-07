@@ -1,4 +1,4 @@
-/* global chrome, window */
+/* global chrome, document, window */
 
 import { chromium } from '@playwright/test';
 import { copyFile, mkdir, readFile } from 'node:fs/promises';
@@ -46,16 +46,22 @@ try {
 
   await page.screenshot({ path: resolve(screenshotDirectory, '01-url-cleaner.png') });
 
-  await page.locator('section').filter({ hasText: 'Pause inactive tabs safely' }).evaluate((element) => window.scrollTo(0, element.offsetTop - 70));
+  await page.evaluate(() => {
+    document.body.style.paddingBottom = '520px';
+  });
+  await page.locator('section').filter({ hasText: 'Pause inactive tabs safely' }).evaluate((element) => window.scrollTo(0, element.offsetTop - 84));
   await page.waitForTimeout(150);
   await page.screenshot({ path: resolve(screenshotDirectory, '02-tab-suspension.png') });
 
-  await page.getByRole('heading', { name: 'Website access' }).evaluate((element) => window.scrollTo(0, element.closest('section').offsetTop - 70));
+  await page.getByRole('heading', { name: 'Website access' }).evaluate((element) => window.scrollTo(0, element.closest('section').offsetTop - 90));
   await page.waitForTimeout(150);
   await page.screenshot({ path: resolve(screenshotDirectory, '03-permission-controls.png') });
 
   await page.getByLabel('Choose theme').selectOption('dark');
-  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.evaluate(() => {
+    document.body.style.paddingBottom = '';
+    window.scrollTo(0, 0);
+  });
   await page.waitForTimeout(150);
   await page.screenshot({ path: resolve(screenshotDirectory, '04-dark-mode.png') });
 

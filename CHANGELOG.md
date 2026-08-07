@@ -5,6 +5,9 @@
 - Simplified page, link, and selection cleaning into one adaptive context-menu action.
 - Reused the nearest existing tab when suspending the active tab to avoid unnecessary blank tabs.
 - Removed unnecessary module preload hints that Chrome reported as extension warnings.
+- Simplified the popup wording and moved optional exceptions and custom rules into one advanced section.
+- Replaced ambiguous checkbox styling with accessible on/off switches.
+- Kept every popup action visible without requiring a scrollbar.
 
 ## 1.0.0 — 2026-08-07
 

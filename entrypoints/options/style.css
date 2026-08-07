@@ -80,7 +80,10 @@ body {
 .save-group,
 .switch-row,
 .number-field,
-.access-actions {
+.access-actions,
+.inline-setting,
+.advanced-card summary,
+.advanced-meta {
   display: flex;
   align-items: center;
 }
@@ -126,12 +129,38 @@ label > small {
 }
 
 .switch-row input {
+  position: relative;
   width: 42px;
   height: 24px;
+  appearance: none;
   flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
   margin: 0;
-  accent-color: var(--accent);
+  padding: 2px;
+  background: var(--surface-strong);
   cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.switch-row input::before {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(25, 30, 38, 0.25);
+  content: '';
+  transition: transform 140ms ease;
+}
+
+.switch-row input:checked {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.switch-row input:checked::before {
+  transform: translateX(18px);
 }
 
 .field-grid {
@@ -142,7 +171,7 @@ label > small {
 }
 
 .field-grid.two-column {
-  grid-template-columns: minmax(190px, 0.65fr) minmax(280px, 1.35fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .field-grid label {
@@ -170,8 +199,8 @@ textarea {
 }
 
 .number-field {
-  max-width: 260px;
-  margin-top: 4px;
+  width: 210px;
+  flex: 0 0 auto;
   border: 1px solid var(--line);
   border-radius: 9px;
   background: var(--surface);
@@ -188,6 +217,71 @@ textarea {
   padding-right: 12px;
   color: var(--muted);
   font-size: 12px;
+}
+
+.inline-setting {
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.inline-setting label {
+  display: grid;
+  gap: 3px;
+}
+
+.inline-setting:has(input:disabled) {
+  opacity: 0.58;
+}
+
+.advanced-card {
+  padding-block: 18px;
+}
+
+.advanced-card summary {
+  justify-content: space-between;
+  gap: 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.advanced-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.advanced-card summary > span:first-child {
+  display: grid;
+}
+
+.advanced-card summary strong {
+  font-size: 16px;
+}
+
+.advanced-meta {
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.chevron {
+  display: inline-block;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 140ms ease;
+}
+
+.advanced-card[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.advanced-card[open] summary {
+  padding-bottom: 17px;
+  border-bottom: 1px solid var(--line);
 }
 
 .permission-card > div:first-child {
@@ -257,7 +351,8 @@ select {
 
   .card-heading,
   .permission-card,
-  .form-actions {
+  .form-actions,
+  .inline-setting {
     align-items: stretch;
     flex-direction: column;
   }
@@ -269,6 +364,10 @@ select {
   .field-grid,
   .field-grid.two-column {
     grid-template-columns: 1fr;
+  }
+
+  .number-field {
+    width: 100%;
   }
 
   .access-actions {

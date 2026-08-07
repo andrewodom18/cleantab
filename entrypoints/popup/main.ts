@@ -34,12 +34,12 @@ async function loadPopup(): Promise<void> {
 
   if (permissionResponse.ok) {
     const automationEnabled = settings.cleaner.automaticCopy || settings.suspender.automatic;
-    getElement('permission-title').textContent = automationEnabled ? 'Automation is on' : permissionResponse.permission?.automationAccess ? 'Site access is ready' : 'Automation is off';
+    getElement('permission-title').textContent = automationEnabled ? 'Automatic features are on' : permissionResponse.permission?.automationAccess ? 'Website access is ready' : 'Automatic features are off';
     getElement('permission-copy').textContent = automationEnabled
       ? 'CleanTab can protect copied links and inactive tabs using your local settings.'
       : permissionResponse.permission?.automationAccess
         ? 'Enable automatic cleaning or suspension in Settings.'
-        : 'Manual tools work without access to every website.';
+        : 'Manual cleaning and suspension are ready.';
   }
 
   if (!tabResponse.ok || !tabResponse.tab?.url) {
@@ -64,7 +64,7 @@ async function loadPopup(): Promise<void> {
   const host = new URL(activeUrl).hostname;
   getElement('url-host').textContent = host || 'Current page';
   getElement('cleaned-url').textContent = cleanResult.cleanedUrl;
-  getElement('removed-parameters').textContent = formatParameterList(cleanResult.removedParameters);
+  getElement('removed-parameters').textContent = cleanResult.changed ? formatParameterList(cleanResult.removedParameters) : '';
   copyButton.disabled = cleanResult.reason === 'unsupported' || cleanResult.reason === 'invalid';
 
   if (cleanResult.changed) {

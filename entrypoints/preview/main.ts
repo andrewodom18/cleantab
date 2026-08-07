@@ -32,7 +32,7 @@ async function initialize(): Promise<void> {
   });
   originalElement.textContent = result.originalUrl;
   cleanedElement.textContent = result.cleanedUrl;
-  removedElement.textContent = formatParameterList(result.removedParameters);
+  removedElement.textContent = result.changed ? formatParameterList(result.removedParameters) : '';
   cleanedUrl = result.cleanedUrl;
   copyButton.disabled = result.reason === 'invalid' || result.reason === 'unsupported';
 

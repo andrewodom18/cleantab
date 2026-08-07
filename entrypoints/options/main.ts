@@ -21,6 +21,10 @@ const removeAccessButton = getElement<HTMLButtonElement>('remove-access');
 const formStatus = getElement('form-status');
 let hasAutomationAccess = false;
 
+function syncInactivityControl(): void {
+  inactivityMinutes.disabled = !automaticSuspension.checked;
+}
+
 function parseParameters(value: string): { values: string[]; invalid: string[] } {
   const entries = value.split(/[\n,]/).map((item) => item.trim().toLowerCase()).filter(Boolean);
   const invalid = entries.filter((entry) => /[\s&=#?]/.test(entry));
@@ -36,6 +40,7 @@ function populate(settings: CleanTabSettings): void {
   keepParameters.value = settings.cleaner.customKeepParameters.join('\n');
   inactivityMinutes.value = String(settings.suspender.inactivityMinutes);
   theme.value = settings.theme;
+  syncInactivityControl();
   applyTheme(settings.theme);
 }
 
@@ -104,6 +109,7 @@ form.addEventListener('submit', async (event) => {
 });
 
 theme.addEventListener('change', () => applyTheme(theme.value as ThemePreference));
+automaticSuspension.addEventListener('change', syncInactivityControl);
 
 removeAccessButton.addEventListener('click', async () => {
   removeAccessButton.disabled = true;
