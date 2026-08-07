@@ -1,0 +1,148 @@
+@import '../../src/styles/base.css';
+
+body {
+  width: 390px;
+  min-height: 560px;
+}
+
+.popup-shell {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.app-header,
+.section-heading,
+.permission-strip,
+.brand,
+.button-row {
+  display: flex;
+  align-items: center;
+}
+
+.app-header,
+.section-heading,
+.permission-strip {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  gap: 10px;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: 17px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 15px;
+  background: var(--bg);
+  box-shadow: 0 1px 0 rgba(25, 30, 38, 0.02);
+}
+
+.url-result {
+  min-height: 96px;
+  margin: 13px 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 11px;
+  background: var(--surface);
+}
+
+.url-host {
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.url-value {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-bottom: 7px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.removed {
+  margin-bottom: 0;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.section-copy {
+  margin: 10px 0 12px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.button-row {
+  gap: 8px;
+}
+
+.button-row button {
+  flex: 1;
+}
+
+.card .status {
+  margin-top: 8px;
+}
+
+.permission-strip {
+  border-radius: 12px;
+  padding: 11px 12px;
+  background: var(--surface);
+}
+
+.permission-title {
+  margin-bottom: 2px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.permission-copy {
+  max-width: 235px;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.permission-strip button {
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 12px;
+}

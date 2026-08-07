@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CleanTab Settings</title>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-content">
+        <a class="brand-link" href="#main" aria-label="Skip to CleanTab settings">
+          <img class="brand-mark" src="/icon/48.png" alt="" />
+          <span>CleanTab</span>
+        </a>
+        <span class="badge">Private by design</span>
+      </div>
+    </header>
+
+    <main id="main" class="settings-shell">
+      <div class="intro">
+        <p class="eyebrow">Settings</p>
+        <h1>Choose what CleanTab handles automatically.</h1>
+        <p>Everything runs in your browser. CleanTab never sends or saves your browsing history.</p>
+      </div>
+
+      <form id="settings-form" novalidate>
+        <section class="settings-card" aria-labelledby="cleaner-heading">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">URL cleaner</p>
+              <h2 id="cleaner-heading">Remove known tracking</h2>
+            </div>
+            <label class="switch-row" for="automatic-copy">
+              <span>
+                <strong>Clean copied URLs</strong>
+                <small>Only when the copied text is exactly one URL</small>
+              </span>
+              <input id="automatic-copy" type="checkbox" />
+            </label>
+          </div>
+
+          <div class="field-grid">
+            <label>
+              <span>Excluded domains</span>
+              <small>One domain per line. Subdomains are included.</small>
+              <textarea id="cleaner-domains" rows="4" placeholder="example.com"></textarea>
+            </label>
+            <label>
+              <span>Additional parameters to remove</span>
+              <small>One name per line, such as campaign_id.</small>
+              <textarea id="remove-parameters" rows="4" placeholder="campaign_id"></textarea>
+            </label>
+            <label>
+              <span>Parameters to always keep</span>
+              <small>Keep rules override built-in and custom removal.</small>
+              <textarea id="keep-parameters" rows="4" placeholder="utm_source"></textarea>
+            </label>
+          </div>
+        </section>
+
+        <section class="settings-card" aria-labelledby="suspender-heading">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Tab suspension</p>
+              <h2 id="suspender-heading">Pause inactive tabs safely</h2>
+            </div>
+            <label class="switch-row" for="automatic-suspension">
+              <span>
+                <strong>Suspend inactive tabs</strong>
+                <small>Never suspends active, pinned, audible, or dirty tabs</small>
+              </span>
+              <input id="automatic-suspension" type="checkbox" />
+            </label>
+          </div>
+
+          <div class="field-grid two-column">
+            <label>
+              <span>Inactive for</span>
+              <small>Between 5 minutes and 24 hours.</small>
+              <div class="number-field">
+                <input id="inactivity-minutes" type="number" min="5" max="1440" step="1" inputmode="numeric" />
+                <span>minutes</span>
+              </div>
+            </label>
+            <label>
+              <span>Never suspend these domains</span>
+              <small>One domain per line. Subdomains are included.</small>
+              <textarea id="suspender-domains" rows="4" placeholder="music.example.com"></textarea>
+            </label>
+          </div>
+        </section>
+
+        <section class="settings-card permission-card" aria-labelledby="access-heading">
+          <div>
+            <p class="eyebrow">Optional permission</p>
+            <h2 id="access-heading">Website access</h2>
+            <p>Automatic cleaning and unsaved-form protection need access to HTTP and HTTPS pages. Chrome asks once when you turn either feature on. CleanTab processes page information locally and does not keep URL history.</p>
+          </div>
+          <div class="access-actions">
+            <span id="permission-state" class="access-state">Checking access…</span>
+            <button id="remove-access" class="button-danger" type="button" hidden>Remove website access</button>
+          </div>
+        </section>
+
+        <section class="settings-card compact-card" aria-labelledby="appearance-heading">
+          <div>
+            <p class="eyebrow">Appearance</p>
+            <h2 id="appearance-heading">Theme</h2>
+          </div>
+          <label class="select-label">
+            <span class="sr-only">Choose theme</span>
+            <select id="theme">
+              <option value="system">Use system setting</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </label>
+        </section>
+
+        <div class="form-actions">
+          <button id="reset-settings" type="button">Reset defaults</button>
+          <div class="save-group">
+            <p id="form-status" class="status" role="status" aria-live="polite"></p>
+            <button class="button-primary" type="submit">Save settings</button>
+          </div>
+        </div>
+      </form>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

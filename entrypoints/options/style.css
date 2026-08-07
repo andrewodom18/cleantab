@@ -1,0 +1,285 @@
+@import '../../src/styles/base.css';
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.page-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.header-content,
+.settings-shell {
+  width: min(920px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 66px;
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.settings-shell {
+  padding: 54px 0 70px;
+}
+
+.intro {
+  max-width: 680px;
+  margin-bottom: 32px;
+}
+
+.intro h1 {
+  margin: 0 0 12px;
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.intro > p:last-child {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+#settings-form {
+  display: grid;
+  gap: 18px;
+}
+
+.settings-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  background: var(--bg);
+  box-shadow: 0 1px 0 rgba(25, 30, 38, 0.02);
+}
+
+.card-heading,
+.compact-card,
+.permission-card,
+.form-actions,
+.save-group,
+.switch-row,
+.number-field,
+.access-actions {
+  display: flex;
+  align-items: center;
+}
+
+.card-heading,
+.compact-card,
+.permission-card,
+.form-actions {
+  justify-content: space-between;
+  gap: 24px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.switch-row {
+  flex: 0 1 390px;
+  justify-content: space-between;
+  gap: 20px;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.switch-row span {
+  display: grid;
+  gap: 3px;
+}
+
+.switch-row strong,
+label > span {
+  font-size: 13px;
+}
+
+.switch-row small,
+label > small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.switch-row input {
+  width: 42px;
+  height: 24px;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.field-grid.two-column {
+  grid-template-columns: minmax(190px, 0.65fr) minmax(280px, 1.35fr);
+}
+
+.field-grid label {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+}
+
+textarea,
+input[type='number'],
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--text);
+  background: var(--surface);
+}
+
+textarea {
+  min-height: 108px;
+  margin-top: 4px;
+  padding: 10px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.number-field {
+  max-width: 260px;
+  margin-top: 4px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+}
+
+.number-field input {
+  min-height: 42px;
+  border: 0;
+  background: transparent;
+  padding: 9px 10px;
+}
+
+.number-field span {
+  padding-right: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.permission-card > div:first-child {
+  max-width: 610px;
+}
+
+.permission-card p:last-child {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.access-actions {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.access-state {
+  color: var(--warning);
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.access-state[data-granted='true'] {
+  color: var(--success);
+}
+
+.compact-card {
+  padding-block: 18px;
+}
+
+.select-label {
+  width: min(240px, 100%);
+}
+
+select {
+  min-height: 42px;
+  padding: 9px 34px 9px 11px;
+}
+
+.form-actions {
+  padding: 6px 2px 0;
+}
+
+.save-group {
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.save-group .status {
+  max-width: 420px;
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .header-content,
+  .settings-shell {
+    width: min(100% - 24px, 920px);
+  }
+
+  .settings-shell {
+    padding-top: 34px;
+  }
+
+  .card-heading,
+  .permission-card,
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .switch-row {
+    flex-basis: auto;
+  }
+
+  .field-grid,
+  .field-grid.two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .access-actions {
+    align-items: flex-start;
+  }
+
+  .save-group {
+    justify-content: space-between;
+  }
+
+  .save-group .status {
+    text-align: left;
+  }
+}

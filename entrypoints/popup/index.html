@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CleanTab</title>
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header class="app-header">
+        <div class="brand">
+          <img class="brand-mark" src="/icon/48.png" alt="" />
+          <div>
+            <p class="eyebrow">CleanTab</p>
+            <h1>Cleaner links. Calmer tabs.</h1>
+          </div>
+        </div>
+        <span class="badge">Local only</span>
+      </header>
+
+      <section class="card" aria-labelledby="cleaner-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">URL cleaner</p>
+            <h2 id="cleaner-title">Current page</h2>
+          </div>
+          <span id="removed-count" class="count" hidden></span>
+        </div>
+        <div id="url-result" class="url-result" aria-live="polite">
+          <p id="url-host" class="url-host">Checking this page…</p>
+          <p id="cleaned-url" class="url-value"></p>
+          <p id="removed-parameters" class="removed muted"></p>
+        </div>
+        <button id="copy-url" class="button-primary full-width" type="button" disabled>Copy clean URL</button>
+        <p id="clean-status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card" aria-labelledby="suspender-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Tab suspension</p>
+            <h2 id="suspender-title">Free memory safely</h2>
+          </div>
+        </div>
+        <p class="section-copy">Suspended tabs stay in your tab bar and reload when you return.</p>
+        <div class="button-row">
+          <button id="suspend-current" type="button">Suspend this tab</button>
+          <button id="suspend-others" type="button">Suspend others</button>
+        </div>
+        <p id="suspend-status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="permission-strip" aria-labelledby="permission-title">
+        <div>
+          <p id="permission-title" class="permission-title">Automation is off</p>
+          <p id="permission-copy" class="permission-copy">Manual tools work without access to every website.</p>
+        </div>
+        <button id="open-settings" type="button">Settings</button>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "name": "cleantab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Privacy-first URL cleaning and safe tab suspension for Chrome.",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "zip": "wxt zip",
+    "prepare": "wxt prepare",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "store:assets": "npm run build && node scripts/capture-store-assets.mjs",
+    "audit": "node scripts/audit-package.mjs",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run audit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.56.1",
+    "@types/chrome": "^0.2.5",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
+    "jsdom": "^27.2.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.0",
+    "vitest": "^4.0.14",
+    "wxt": "^0.20.27"
+  },
+  "overrides": {
+    "adm-zip": "0.6.0",
+    "esbuild": "0.28.1",
+    "firefox-profile": "4.7.1",
+    "fx-runner": "1.6.0",
+    "shell-quote": "1.10.0",
+    "tmp": "0.2.7",
+    "uuid": "14.0.1"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

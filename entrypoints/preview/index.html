@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clean URL — CleanTab</title>
+  </head>
+  <body>
+    <main class="preview-shell">
+      <header class="preview-header">
+        <img class="brand-mark" src="/icon/48.png" alt="" />
+        <div>
+          <p class="eyebrow">CleanTab</p>
+          <h1>Review cleaned URL</h1>
+        </div>
+      </header>
+
+      <section class="preview-card">
+        <div class="url-block">
+          <p class="url-label">Original</p>
+          <p id="original-url" class="url-text">Loading URL…</p>
+        </div>
+        <div class="direction" aria-hidden="true">↓</div>
+        <div class="url-block clean-block">
+          <p class="url-label">Cleaned</p>
+          <p id="cleaned-url" class="url-text"></p>
+        </div>
+        <p id="removed-parameters" class="removed muted"></p>
+        <p id="preview-status" class="status" role="status" aria-live="polite"></p>
+        <div class="preview-actions">
+          <button id="close-preview" type="button">Close</button>
+          <button id="copy-preview" class="button-primary" type="button" disabled>Copy clean URL</button>
+        </div>
+      </section>
+      <p class="privacy-note">This URL is held only long enough to display this preview and is removed from CleanTab’s session storage when opened.</p>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
