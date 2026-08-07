@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22.13.0
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - run: xvfb-run -a npm run test:e2e
+      - run: npm run zip
+      - name: Prepare release files
+        shell: bash
+        run: |
+          archive=$(find .output -maxdepth 1 -name '*-chrome.zip' -print -quit)
+          test -n "$archive"
+          cp "$archive" .output/CleanTab-${GITHUB_REF_NAME}-chrome.zip
+          cd .output
+          sha256sum CleanTab-${GITHUB_REF_NAME}-chrome.zip > SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v3
+        with:
+          body_path: RELEASE_NOTES.md
+          files: |
+            .output/CleanTab-${{ github.ref_name }}-chrome.zip
+            .output/SHA256SUMS.txt
+          fail_on_unmatched_files: true
