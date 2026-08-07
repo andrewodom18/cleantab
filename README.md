@@ -49,7 +49,7 @@ See [Permissions](docs/PERMISSIONS.md) and [Privacy](PRIVACY.md) for the full ex
 - Keep rules override built-in and custom removal rules.
 - URL cleaning never rewrites navigation or changes the page you are viewing.
 - Suspended tabs remain in the tab bar and reload through Chrome when selected.
-- Suspending the active tab first creates an adjacent tab; if Chrome refuses the discard, CleanTab restores the original state.
+- Suspending the active tab switches to the nearest existing tab, or creates an adjacent tab when no other tab exists. If Chrome refuses the discard, CleanTab restores the original state.
 - Automatic suspension treats missing activity information as recent and refuses to act.
 
 ## Development

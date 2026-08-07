@@ -1,6 +1,11 @@
 import { defineConfig } from 'wxt';
 
 export default defineConfig({
+  vite: () => ({
+    build: {
+      modulePreload: false,
+    },
+  }),
   manifest: {
     name: 'CleanTab',
     short_name: 'CleanTab',

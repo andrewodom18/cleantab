@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Simplified page, link, and selection cleaning into one adaptive context-menu action.
+- Reused the nearest existing tab when suspending the active tab to avoid unnecessary blank tabs.
+- Removed unnecessary module preload hints that Chrome reported as extension warnings.
+
 ## 1.0.0 — 2026-08-07
 
 - Added conservative URL tracking-parameter removal with previews, custom rules, and domain exclusions.

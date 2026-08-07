@@ -44,6 +44,7 @@ describe('suspendCurrentTab', () => {
     mocks.loadSettings.mockResolvedValue(defaultSettings());
     mocks.getTabActivity.mockResolvedValue({ lastActiveAt: Date.now(), dirty: false });
     mocks.get.mockResolvedValue({ id: 8, active: true, windowId: 2, index: 3, url: 'https://example.com', pinned: false, audible: false, discarded: false });
+    mocks.query.mockResolvedValue([]);
     mocks.create.mockResolvedValue({ id: 9 });
     mocks.discard.mockResolvedValue({ id: 8, discarded: true });
     mocks.update.mockResolvedValue({ id: 8, active: true });
@@ -54,6 +55,19 @@ describe('suspendCurrentTab', () => {
     await expect(suspendCurrentTab(8)).resolves.toEqual({ suspended: 1, skipped: {} });
     expect(mocks.create).toHaveBeenCalledWith({ active: true, index: 4, windowId: 2 });
     expect(mocks.create.mock.invocationCallOrder[0]!).toBeLessThan(mocks.discard.mock.invocationCallOrder[0]!);
+  });
+
+  it('switches to the nearest existing tab instead of creating a blank tab', async () => {
+    mocks.query.mockResolvedValue([
+      { id: 7, active: false, windowId: 2, index: 2 },
+      { id: 8, active: true, windowId: 2, index: 3 },
+      { id: 10, active: false, windowId: 2, index: 5 },
+    ]);
+
+    await expect(suspendCurrentTab(8)).resolves.toEqual({ suspended: 1, skipped: {} });
+    expect(mocks.update).toHaveBeenCalledWith(7, { active: true });
+    expect(mocks.create).not.toHaveBeenCalled();
+    expect(mocks.update.mock.invocationCallOrder[0]!).toBeLessThan(mocks.discard.mock.invocationCallOrder[0]!);
   });
 
   it('reactivates the original and removes the helper if discard fails', async () => {

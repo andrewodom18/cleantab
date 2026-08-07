@@ -4,6 +4,7 @@ import type { BackgroundRequest, BackgroundResponse, PreviewPayload } from '../s
 import { markTabActive, removeTabActivity, setTabDirty } from '../src/background/activity-store';
 import { disableUnavailableAutomations, injectAutomation, injectAutomationIntoOpenTabs } from '../src/background/automation';
 import { runAutomaticSuspension, seedActivity, suspendCurrentTab, suspendOtherTabs } from '../src/background/suspender';
+import { selectContextMenuUrl } from '../src/core/context-menu';
 
 const AUTO_SUSPEND_ALARM = 'automatic-tab-suspension';
 const PREVIEW_PREFIX = 'preview:';
@@ -11,9 +12,11 @@ const PREVIEW_TTL_MS = 10 * 60_000;
 
 async function createContextMenus(): Promise<void> {
   await browser.contextMenus.removeAll();
-  browser.contextMenus.create({ id: 'clean-page-url', title: 'Clean page URL with CleanTab', contexts: ['page'] });
-  browser.contextMenus.create({ id: 'clean-link-url', title: 'Clean link URL with CleanTab', contexts: ['link'] });
-  browser.contextMenus.create({ id: 'clean-selected-url', title: 'Clean selected URL with CleanTab', contexts: ['selection'] });
+  browser.contextMenus.create({
+    id: 'preview-clean-url',
+    title: 'Preview URL with CleanTab',
+    contexts: ['page', 'link', 'selection'],
+  });
 }
 
 async function cleanupStalePreviews(): Promise<void> {
@@ -89,11 +92,8 @@ export default defineBackground(() => {
   browser.runtime.onMessage.addListener((request, sender) => handleMessage(request as BackgroundRequest, sender));
 
   browser.contextMenus.onClicked.addListener((info) => {
-    const candidate = info.menuItemId === 'clean-link-url'
-      ? info.linkUrl
-      : info.menuItemId === 'clean-selected-url'
-        ? info.selectionText?.trim()
-        : info.pageUrl;
+    if (info.menuItemId !== 'preview-clean-url') return;
+    const candidate = selectContextMenuUrl(info);
     if (candidate) void openPreview(candidate);
   });
 

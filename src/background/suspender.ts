@@ -37,14 +37,28 @@ export async function suspendCurrentTab(tabId: number): Promise<SuspensionSummar
     throw new Error(`This tab stayed open because it is ${labels[safetyDecision.reason ?? 'protected'] ?? 'protected'}.`);
   }
 
+  const windowTabs = await browser.tabs.query({ windowId: tab.windowId });
+  const nearbyTab = windowTabs
+    .filter((candidate) => candidate.id !== undefined && candidate.id !== tabId)
+    .sort((left, right) => {
+      const leftDistance = Math.abs(left.index - tab.index);
+      const rightDistance = Math.abs(right.index - tab.index);
+      if (leftDistance !== rightDistance) return leftDistance - rightDistance;
+      return left.index - right.index;
+    })[0];
+
   let helperTabId: number | undefined;
   try {
-    const helper = await browser.tabs.create({
-      active: true,
-      index: tab.index + 1,
-      windowId: tab.windowId,
-    });
-    helperTabId = helper.id;
+    if (nearbyTab?.id !== undefined) {
+      await browser.tabs.update(nearbyTab.id, { active: true });
+    } else {
+      const helper = await browser.tabs.create({
+        active: true,
+        index: tab.index + 1,
+        windowId: tab.windowId,
+      });
+      helperTabId = helper.id;
+    }
     const discarded = await browser.tabs.discard(tabId);
     if (!discarded?.discarded) throw new Error('The browser refused to suspend this tab.');
     return { suspended: 1, skipped: {} };
