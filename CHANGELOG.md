@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.1 — 2026-08-11
 
 - Simplified page, link, and selection cleaning into one adaptive context-menu action.
 - Reused the nearest existing tab when suspending the active tab to avoid unnecessary blank tabs.

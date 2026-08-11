@@ -20,7 +20,7 @@ Everything happens inside your browser. CleanTab has no account, server, analyti
 
 ### GitHub release
 
-1. Download `CleanTab-v1.0.0-chrome.zip` from the [latest release](https://github.com/andrewodom18/cleantab/releases/latest).
+1. Download `CleanTab-v1.0.1-chrome.zip` from the [latest release](https://github.com/andrewodom18/cleantab/releases/latest).
 2. Extract the ZIP to a permanent folder.
 3. Open `chrome://extensions` in Chrome.
 4. Enable **Developer mode**.
@@ -86,7 +86,7 @@ See [Architecture](docs/ARCHITECTURE.md) for the data flow and safety boundaries
 
 ## Browser support
 
-Version 1.0.0 targets current Chrome releases on macOS, Windows, and Linux. The browser API layer is written for a future Firefox build, but Firefox is not part of this release.
+Version 1.0.1 targets current Chrome releases on macOS, Windows, and Linux. The browser API layer is written for a future Firefox build, but Firefox is not part of this release.
 
 ## Contributing and security
 

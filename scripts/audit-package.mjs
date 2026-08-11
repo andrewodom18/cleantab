@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 
 const output = resolve('.output/chrome-mv3');
 const manifest = JSON.parse(await readFile(resolve(output, 'manifest.json'), 'utf8'));
+const packageMetadata = JSON.parse(await readFile(resolve('package.json'), 'utf8'));
 const failures = [];
 
 const expectedRequired = ['alarms', 'contextMenus', 'storage', 'tabs'];
@@ -14,7 +15,7 @@ function sameMembers(actual = [], expected) {
 }
 
 if (manifest.manifest_version !== 3) failures.push('manifest_version must be 3');
-if (manifest.version !== '1.0.0') failures.push('manifest version must be 1.0.0');
+if (manifest.version !== packageMetadata.version) failures.push(`manifest version must match package version ${packageMetadata.version}`);
 if (!sameMembers(manifest.permissions, expectedRequired)) failures.push(`unexpected required permissions: ${manifest.permissions}`);
 if (!sameMembers(manifest.optional_permissions, expectedOptional)) failures.push(`unexpected optional permissions: ${manifest.optional_permissions}`);
 if (!sameMembers(manifest.optional_host_permissions, expectedOrigins)) failures.push(`unexpected optional host permissions: ${manifest.optional_host_permissions}`);

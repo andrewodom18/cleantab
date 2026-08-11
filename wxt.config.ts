@@ -9,7 +9,7 @@ export default defineConfig({
   manifest: {
     name: 'CleanTab',
     short_name: 'CleanTab',
-    version: '1.0.0',
+    version: '1.0.1',
     description: 'Clean tracking from URLs and safely suspend tabs. Private, local, and lightweight.',
     permissions: ['storage', 'tabs', 'alarms', 'contextMenus'],
     optional_permissions: ['scripting'],

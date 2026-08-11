@@ -36,7 +36,7 @@ Use **Reset defaults** in CleanTab Settings to replace saved settings with defau
 
 ## Changes
 
-Material changes to this policy will be documented in the repository and release notes. A future version that introduces remote data processing would require a new disclosure and explicit review; version 1.0.0 contains none.
+Material changes to this policy will be documented in the repository and release notes. A future version that introduces remote data processing would require a new disclosure and explicit review; version 1.0.1 contains none.
 
 ## Contact
 
