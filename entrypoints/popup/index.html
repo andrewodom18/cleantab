@@ -7,56 +7,77 @@
   </head>
   <body>
     <main class="popup-shell">
-      <header class="app-header">
+      <header class="popup-header">
         <div class="brand">
           <img class="brand-mark" src="/icon/48.png" alt="" />
-          <div>
-            <p class="eyebrow">CleanTab</p>
-            <h1>Cleaner links. Calmer tabs.</h1>
-          </div>
+          <strong>CleanTab</strong>
         </div>
-        <span class="badge">Local only</span>
+        <button id="open-settings" class="header-action" type="button" aria-label="Open CleanTab settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 8.25A3.75 3.75 0 1 0 12 15.75 3.75 3.75 0 0 0 12 8.25Z" />
+            <path d="M19 13.2v-2.4l-2.05-.55a7.4 7.4 0 0 0-.6-1.45l1.06-1.84-1.7-1.7-1.84 1.06a7.4 7.4 0 0 0-1.45-.6L11.87 3h-2.4l-.55 2.05a7.4 7.4 0 0 0-1.45.6L5.63 4.59l-1.7 1.7 1.06 1.84a7.4 7.4 0 0 0-.6 1.45L2.34 10.13v2.4l2.05.55c.15.51.35 1 .6 1.45l-1.06 1.84 1.7 1.7 1.84-1.06c.45.25.94.45 1.45.6l.55 2.05h2.4l.55-2.05c.51-.15 1-.35 1.45-.6l1.84 1.06 1.7-1.7-1.06-1.84c.25-.45.45-.94.6-1.45L19 13.2Z" />
+          </svg>
+          <span>Settings</span>
+        </button>
       </header>
 
-      <section class="card" aria-labelledby="cleaner-title">
-        <div class="section-heading">
+      <section class="panel cleaner-panel" aria-labelledby="cleaner-title">
+        <div class="panel-heading">
           <div>
-            <p class="eyebrow">URL cleaner</p>
-            <h2 id="cleaner-title">Current page</h2>
+            <p class="eyebrow">Current link</p>
+            <h1 id="cleaner-title">Clean this link</h1>
           </div>
-          <span id="removed-count" class="count" hidden></span>
+          <span id="clean-state" class="state-pill" data-tone="neutral">Checking</span>
         </div>
-        <div id="url-result" class="url-result" aria-live="polite">
+
+        <div id="url-result" class="link-preview" aria-live="polite">
           <p id="url-host" class="url-host">Checking this page…</p>
           <p id="cleaned-url" class="url-value"></p>
-          <p id="removed-parameters" class="removed muted"></p>
+          <p id="removed-parameters" class="removed-parameters"></p>
         </div>
-        <button id="copy-url" class="button-primary full-width" type="button" disabled>Copy cleaned URL</button>
+
+        <button id="copy-url" class="button-primary full-width" type="button" disabled>Copy clean link</button>
         <p id="clean-status" class="status" role="status" aria-live="polite"></p>
       </section>
 
-      <section class="card" aria-labelledby="suspender-title">
-        <div class="section-heading">
+      <section class="panel suspension-panel" aria-labelledby="suspender-title">
+        <div class="panel-heading">
           <div>
-            <p class="eyebrow">Tab suspension</p>
-            <h2 id="suspender-title">Suspend tabs</h2>
+            <p class="eyebrow">Memory</p>
+            <h2 id="suspender-title">Pause unused tabs</h2>
           </div>
         </div>
-        <p class="section-copy">Pause tabs to free memory. They stay in your tab bar and reload when you return.</p>
-        <div class="button-row">
-          <button id="suspend-current" type="button">Suspend this tab</button>
-          <button id="suspend-others" type="button">Suspend other tabs</button>
+
+        <div class="tab-actions">
+          <button id="suspend-current" class="tab-action" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="7" y="6" width="3" height="12" rx="1" />
+              <rect x="14" y="6" width="3" height="12" rx="1" />
+            </svg>
+            <span>
+              <strong>This tab</strong>
+              <small>Reloads when reopened</small>
+            </span>
+          </button>
+          <button id="suspend-others" class="tab-action" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 7.5h14M7 4.5h10M6.5 10.5h11v8h-11z" />
+            </svg>
+            <span>
+              <strong>Other tabs</strong>
+              <small>Keeps protected tabs open</small>
+            </span>
+          </button>
         </div>
         <p id="suspend-status" class="status" role="status" aria-live="polite"></p>
       </section>
 
-      <section class="permission-strip" aria-labelledby="permission-title">
-        <div>
-          <p id="permission-title" class="permission-title">Automatic features are off</p>
-          <p id="permission-copy" class="permission-copy">Manual cleaning and suspension are ready.</p>
-        </div>
-        <button id="open-settings" type="button">Settings</button>
-      </section>
+      <footer class="popup-footer">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="automation-state">Manual mode</span>
+        <span class="footer-separator" aria-hidden="true">·</span>
+        <span>Everything stays local</span>
+      </footer>
     </main>
     <script type="module" src="./main.ts"></script>
   </body>

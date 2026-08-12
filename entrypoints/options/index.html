@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="manifest.open_in_tab" content="true" />
     <title>CleanTab Settings</title>
   </head>
   <body>
@@ -12,74 +13,75 @@
           <img class="brand-mark" src="/icon/48.png" alt="" />
           <span>CleanTab</span>
         </a>
-        <span class="badge">Private by design</span>
+        <span class="privacy-label">
+          <span class="status-dot" aria-hidden="true"></span>
+          Local only
+        </span>
       </div>
     </header>
 
     <main id="main" class="settings-shell">
       <div class="intro">
-        <p class="eyebrow">Settings</p>
-        <h1>Choose what CleanTab handles automatically.</h1>
-        <p>Everything runs in your browser. CleanTab never sends or saves your browsing history.</p>
+        <p class="eyebrow">CleanTab</p>
+        <h1>Settings</h1>
+        <p>Choose what happens automatically. Manual cleaning and tab suspension always remain available from the popup.</p>
       </div>
 
       <form id="settings-form" novalidate>
-        <section class="settings-card" aria-labelledby="cleaner-heading">
-          <div class="card-heading">
+        <section class="settings-section" aria-labelledby="automation-heading">
+          <div class="section-intro">
             <div>
-              <p class="eyebrow">URL cleaner</p>
-              <h2 id="cleaner-heading">Remove known tracking</h2>
+              <p class="eyebrow">Automation</p>
+              <h2 id="automation-heading">Set it and forget it</h2>
             </div>
-            <label class="switch-row" for="automatic-copy">
-              <span>
-                <strong>Automatically clean copied URLs</strong>
-                <small>Only when the copied text is exactly one URL</small>
+            <p>Optional and off by default.</p>
+          </div>
+
+          <div class="setting-list">
+            <label class="setting-row switch-setting" for="automatic-copy">
+              <span class="setting-copy">
+                <strong>Clean copied links</strong>
+                <small>Removes known trackers when the copied text is exactly one web address.</small>
               </span>
               <input id="automatic-copy" type="checkbox" role="switch" />
             </label>
-          </div>
-        </section>
 
-        <section class="settings-card" aria-labelledby="suspender-heading">
-          <div class="card-heading">
-            <div>
-              <p class="eyebrow">Tab suspension</p>
-              <h2 id="suspender-heading">Pause inactive tabs safely</h2>
-            </div>
-            <label class="switch-row" for="automatic-suspension">
-              <span>
-                <strong>Automatically suspend inactive tabs</strong>
-                <small>Never suspends active, pinned, audible, or dirty tabs</small>
-              </span>
-              <input id="automatic-suspension" type="checkbox" role="switch" />
-            </label>
-          </div>
-
-          <div class="inline-setting">
-            <label for="inactivity-minutes">
-              <span>Suspend after</span>
-              <small>Choose between 5 minutes and 24 hours.</small>
-            </label>
-            <div class="number-field">
-              <input id="inactivity-minutes" type="number" min="5" max="1440" step="1" inputmode="numeric" />
-              <span>minutes</span>
+            <div class="setting-block">
+              <label class="setting-row switch-setting" for="automatic-suspension">
+                <span class="setting-copy">
+                  <strong>Suspend inactive tabs</strong>
+                  <small>Never pauses active, pinned, audible, protected, or known unsaved tabs.</small>
+                </span>
+                <input id="automatic-suspension" type="checkbox" role="switch" />
+              </label>
+              <div class="child-setting">
+                <label for="inactivity-minutes">
+                  <span>Suspend after</span>
+                  <small>5 minutes to 24 hours</small>
+                </label>
+                <div class="number-field">
+                  <input id="inactivity-minutes" type="number" min="5" max="1440" step="1" inputmode="numeric" />
+                  <span>minutes</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <details class="settings-card advanced-card">
+        <details class="settings-section advanced-section">
           <summary>
             <span>
               <span class="eyebrow">Advanced</span>
               <strong>Exceptions and custom rules</strong>
+              <small>The built-in defaults work for most people.</small>
             </span>
-            <span class="advanced-meta">
-              <span>Optional</span>
-              <span class="chevron" aria-hidden="true">⌄</span>
+            <span class="summary-action">
+              <span>Show</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
             </span>
           </summary>
 
-          <div class="field-grid two-column">
+          <div class="rule-grid">
             <label>
               <span>Do not clean these domains</span>
               <small>One domain per line. Subdomains are included.</small>
@@ -97,45 +99,60 @@
             </label>
             <label>
               <span>Parameters to always keep</span>
-              <small>Keep rules override built-in and custom removal.</small>
+              <small>Keep rules override all removal rules.</small>
               <textarea id="keep-parameters" rows="4" placeholder="utm_source"></textarea>
             </label>
           </div>
         </details>
 
-        <section class="settings-card permission-card" aria-labelledby="access-heading">
-          <div>
-            <p class="eyebrow">Optional permission</p>
-            <h2 id="access-heading">Website access</h2>
-            <p>Chrome asks once when you turn on an automatic feature. Website access powers copied-link cleaning and unsaved-form protection. CleanTab never sends or keeps your browsing history.</p>
+        <section class="settings-section" aria-labelledby="preferences-heading">
+          <div class="section-intro compact-intro">
+            <div>
+              <p class="eyebrow">Preferences</p>
+              <h2 id="preferences-heading">Browser experience</h2>
+            </div>
           </div>
-          <div class="access-actions">
-            <span id="permission-state" class="access-state">Checking access…</span>
-            <button id="remove-access" class="button-danger" type="button" hidden>Remove website access</button>
+
+          <div class="setting-list">
+            <div class="setting-row">
+              <span class="setting-copy">
+                <strong>Appearance</strong>
+                <small>Follow your system or choose a fixed theme.</small>
+              </span>
+              <label class="select-label">
+                <span class="sr-only">Choose theme</span>
+                <select id="theme">
+                  <option value="system">Use system setting</option>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="setting-row access-row">
+              <span class="setting-copy">
+                <strong>Website access</strong>
+                <small>Used locally for copied-link cleaning and unsaved-form protection.</small>
+              </span>
+              <div class="access-actions">
+                <span id="permission-state" class="access-state">Checking…</span>
+                <button id="remove-access" class="button-quiet danger-text" type="button" hidden>Remove access</button>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section class="settings-card compact-card" aria-labelledby="appearance-heading">
-          <div>
-            <p class="eyebrow">Appearance</p>
-            <h2 id="appearance-heading">Theme</h2>
-          </div>
-          <label class="select-label">
-            <span class="sr-only">Choose theme</span>
-            <select id="theme">
-              <option value="system">Use system setting</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </label>
-        </section>
+        <div class="reset-row">
+          <span class="setting-copy">
+            <strong>Start over</strong>
+            <small>Restore CleanTab’s safe defaults.</small>
+          </span>
+          <button id="reset-settings" class="button-quiet" type="button">Reset all settings</button>
+        </div>
 
-        <div class="form-actions">
-          <button id="reset-settings" type="button">Reset defaults</button>
-          <div class="save-group">
-            <p id="form-status" class="status" role="status" aria-live="polite"></p>
-            <button class="button-primary" type="submit">Save settings</button>
-          </div>
+        <div id="save-bar" class="save-bar" hidden>
+          <p id="form-status" class="status" role="status" aria-live="polite">Unsaved changes</p>
+          <button id="save-settings" class="button-primary" type="submit">Save changes</button>
         </div>
       </form>
     </main>

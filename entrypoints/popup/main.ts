@@ -16,6 +16,12 @@ const suspendCurrentButton = getElement<HTMLButtonElement>('suspend-current');
 const suspendOthersButton = getElement<HTMLButtonElement>('suspend-others');
 const cleanStatus = getElement('clean-status');
 const suspendStatus = getElement('suspend-status');
+const cleanState = getElement('clean-state');
+
+function setCleanState(label: string, tone: 'neutral' | 'success' | 'warning' = 'neutral'): void {
+  cleanState.textContent = label;
+  cleanState.dataset.tone = tone;
+}
 
 function describeSummary(suspended: number, skipped: Record<string, number | undefined>): string {
   const skippedTotal = Object.values(skipped).reduce<number>((sum, value) => sum + (value ?? 0), 0);
@@ -34,16 +40,16 @@ async function loadPopup(): Promise<void> {
 
   if (permissionResponse.ok) {
     const automationEnabled = settings.cleaner.automaticCopy || settings.suspender.automatic;
-    getElement('permission-title').textContent = automationEnabled ? 'Automatic features are on' : permissionResponse.permission?.automationAccess ? 'Website access is ready' : 'Automatic features are off';
-    getElement('permission-copy').textContent = automationEnabled
-      ? 'CleanTab can protect copied links and inactive tabs using your local settings.'
+    getElement('automation-state').textContent = automationEnabled
+      ? 'Automation on'
       : permissionResponse.permission?.automationAccess
-        ? 'Enable automatic cleaning or suspension in Settings.'
-        : 'Manual cleaning and suspension are ready.';
+        ? 'Automation ready'
+        : 'Manual mode';
   }
 
   if (!tabResponse.ok || !tabResponse.tab?.url) {
     getElement('url-host').textContent = 'This page cannot be inspected.';
+    setCleanState('Unavailable', 'warning');
     setStatus(cleanStatus, tabResponse.ok ? 'The browser did not provide a page URL.' : tabResponse.error, 'warning');
     suspendCurrentButton.disabled = true;
     return;
@@ -68,16 +74,14 @@ async function loadPopup(): Promise<void> {
   copyButton.disabled = cleanResult.reason === 'unsupported' || cleanResult.reason === 'invalid';
 
   if (cleanResult.changed) {
-    const count = getElement('removed-count');
-    count.hidden = false;
-    count.textContent = `${cleanResult.removedParameters.length} removed`;
-    setStatus(cleanStatus, 'Ready to copy without known tracking parameters.', 'success');
+    setCleanState(`${cleanResult.removedParameters.length} removed`, 'success');
   } else if (cleanResult.reason === 'excluded') {
-    setStatus(cleanStatus, 'This domain is excluded in your settings.', 'neutral');
+    setCleanState('Excluded');
   } else if (cleanResult.reason === 'unsupported') {
-    setStatus(cleanStatus, 'Only HTTP and HTTPS links can be cleaned.', 'warning');
+    setCleanState('Unavailable', 'warning');
+    setStatus(cleanStatus, 'Only web links can be cleaned.', 'warning');
   } else {
-    setStatus(cleanStatus, 'This URL is already clean.', 'success');
+    setCleanState('Already clean', 'success');
   }
 }
 
@@ -85,7 +89,8 @@ copyButton.addEventListener('click', async () => {
   if (!cleanResult) return;
   try {
     await copyText(cleanResult.cleanedUrl);
-    setStatus(cleanStatus, 'Clean URL copied.', 'success');
+    setCleanState('Copied', 'success');
+    setStatus(cleanStatus, 'Clean link copied.', 'success');
   } catch (error) {
     setStatus(cleanStatus, error instanceof Error ? error.message : 'Could not copy the URL.', 'error');
   }

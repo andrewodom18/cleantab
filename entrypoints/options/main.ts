@@ -1,6 +1,6 @@
 import { parseDomainList } from '../../src/core/domains';
-import { getPermissionStatus, removeAutomationAccess, requestAutomationAccess } from '../../src/shared/permissions';
 import { sendBackgroundRequest } from '../../src/shared/messages';
+import { getPermissionStatus, removeAutomationAccess, requestAutomationAccess } from '../../src/shared/permissions';
 import { DEFAULT_SETTINGS, loadSettings, resetSettings, saveSettings } from '../../src/shared/settings';
 import { applyTheme } from '../../src/shared/theme';
 import type { CleanTabSettings, ThemePreference } from '../../src/shared/types';
@@ -18,8 +18,13 @@ const inactivityMinutes = getElement<HTMLInputElement>('inactivity-minutes');
 const theme = getElement<HTMLSelectElement>('theme');
 const permissionState = getElement('permission-state');
 const removeAccessButton = getElement<HTMLButtonElement>('remove-access');
+const saveBar = getElement('save-bar');
+const saveButton = getElement<HTMLButtonElement>('save-settings');
 const formStatus = getElement('form-status');
+
 let hasAutomationAccess = false;
+let baseline = '';
+let feedbackTimer: number | undefined;
 
 function syncInactivityControl(): void {
   inactivityMinutes.disabled = !automaticSuspension.checked;
@@ -44,8 +49,61 @@ function populate(settings: CleanTabSettings): void {
   applyTheme(settings.theme);
 }
 
+function formSnapshot(): string {
+  return JSON.stringify({
+    automaticCopy: automaticCopy.checked,
+    automaticSuspension: automaticSuspension.checked,
+    cleanerDomains: cleanerDomains.value,
+    suspenderDomains: suspenderDomains.value,
+    removeParameters: removeParameters.value,
+    keepParameters: keepParameters.value,
+    inactivityMinutes: inactivityMinutes.value,
+    theme: theme.value,
+  });
+}
+
+function clearFeedbackTimer(): void {
+  if (feedbackTimer !== undefined) window.clearTimeout(feedbackTimer);
+  feedbackTimer = undefined;
+}
+
+function showSaveBar(message: string, tone: 'neutral' | 'success' | 'warning' | 'error', canSave: boolean): void {
+  clearFeedbackTimer();
+  saveBar.hidden = false;
+  saveButton.disabled = !canSave;
+  setStatus(formStatus, message, tone);
+}
+
+function hideSaveBar(): void {
+  clearFeedbackTimer();
+  saveBar.hidden = true;
+  saveButton.disabled = false;
+}
+
+function markClean(message?: string, tone: 'success' | 'warning' = 'success'): void {
+  baseline = formSnapshot();
+  if (!message) {
+    hideSaveBar();
+    return;
+  }
+
+  showSaveBar(message, tone, false);
+  feedbackTimer = window.setTimeout(() => {
+    if (formSnapshot() === baseline) hideSaveBar();
+  }, 1800);
+}
+
+function updateDirtyState(): void {
+  if (!baseline) return;
+  if (formSnapshot() === baseline) {
+    hideSaveBar();
+    return;
+  }
+  showSaveBar('Unsaved changes', 'neutral', true);
+}
+
 function renderPermissionState(): void {
-  permissionState.textContent = hasAutomationAccess ? 'Website access granted' : 'Website access not granted';
+  permissionState.textContent = hasAutomationAccess ? 'Granted' : 'Not granted';
   permissionState.dataset.granted = String(hasAutomationAccess);
   removeAccessButton.hidden = !hasAutomationAccess;
 }
@@ -58,83 +116,103 @@ async function refreshPermissionState(): Promise<void> {
 async function initialize(): Promise<void> {
   const [settings] = await Promise.all([loadSettings(), refreshPermissionState()]);
   populate(settings);
+  baseline = formSnapshot();
+  hideSaveBar();
 }
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  setStatus(formStatus, 'Checking settings…');
+  showSaveBar('Checking settings…', 'neutral', false);
 
-  const cleanerDomainResult = parseDomainList(cleanerDomains.value);
-  const suspenderDomainResult = parseDomainList(suspenderDomains.value);
-  const removeResult = parseParameters(removeParameters.value);
-  const keepResult = parseParameters(keepParameters.value);
-  const invalid = [...cleanerDomainResult.invalid, ...suspenderDomainResult.invalid, ...removeResult.invalid, ...keepResult.invalid];
-  if (invalid.length > 0) {
-    setStatus(formStatus, `Fix invalid entries: ${invalid.join(', ')}`, 'error');
-    return;
-  }
-
-  const wantsAutomation = automaticCopy.checked || automaticSuspension.checked;
-  if (wantsAutomation && !hasAutomationAccess) {
-    setStatus(formStatus, 'Chrome is asking for website access…');
-    hasAutomationAccess = await requestAutomationAccess();
-    renderPermissionState();
-    if (!hasAutomationAccess) {
-      automaticCopy.checked = false;
-      automaticSuspension.checked = false;
-      setStatus(formStatus, 'Website access was not granted. Manual tools remain available.', 'warning');
+  try {
+    const cleanerDomainResult = parseDomainList(cleanerDomains.value);
+    const suspenderDomainResult = parseDomainList(suspenderDomains.value);
+    const removeResult = parseParameters(removeParameters.value);
+    const keepResult = parseParameters(keepParameters.value);
+    const invalid = [...cleanerDomainResult.invalid, ...suspenderDomainResult.invalid, ...removeResult.invalid, ...keepResult.invalid];
+    if (invalid.length > 0) {
+      showSaveBar(`Fix invalid entries: ${invalid.join(', ')}`, 'error', true);
+      return;
     }
+
+    const wantsAutomation = automaticCopy.checked || automaticSuspension.checked;
+    let permissionDenied = false;
+    if (wantsAutomation && !hasAutomationAccess) {
+      showSaveBar('Chrome is asking for website access…', 'neutral', false);
+      hasAutomationAccess = await requestAutomationAccess();
+      renderPermissionState();
+      if (!hasAutomationAccess) {
+        automaticCopy.checked = false;
+        automaticSuspension.checked = false;
+        syncInactivityControl();
+        permissionDenied = true;
+      }
+    }
+
+    const settings: CleanTabSettings = {
+      schemaVersion: 1,
+      theme: theme.value as ThemePreference,
+      cleaner: {
+        automaticCopy: automaticCopy.checked && hasAutomationAccess,
+        excludedDomains: cleanerDomainResult.domains,
+        customRemoveParameters: removeResult.values,
+        customKeepParameters: keepResult.values,
+      },
+      suspender: {
+        automatic: automaticSuspension.checked && hasAutomationAccess,
+        inactivityMinutes: Number(inactivityMinutes.value),
+        excludedDomains: suspenderDomainResult.domains,
+      },
+    };
+
+    const saved = await saveSettings(settings);
+    populate(saved);
+    await sendBackgroundRequest({ type: 'settings-updated' });
+    markClean(permissionDenied ? 'Saved. Automatic features stayed off.' : 'Settings saved.', permissionDenied ? 'warning' : 'success');
+  } catch (error) {
+    showSaveBar(error instanceof Error ? error.message : 'Settings could not be saved.', 'error', true);
   }
-
-  const settings: CleanTabSettings = {
-    schemaVersion: 1,
-    theme: theme.value as ThemePreference,
-    cleaner: {
-      automaticCopy: automaticCopy.checked && hasAutomationAccess,
-      excludedDomains: cleanerDomainResult.domains,
-      customRemoveParameters: removeResult.values,
-      customKeepParameters: keepResult.values,
-    },
-    suspender: {
-      automatic: automaticSuspension.checked && hasAutomationAccess,
-      inactivityMinutes: Number(inactivityMinutes.value),
-      excludedDomains: suspenderDomainResult.domains,
-    },
-  };
-
-  const saved = await saveSettings(settings);
-  populate(saved);
-  await sendBackgroundRequest({ type: 'settings-updated' });
-  setStatus(formStatus, wantsAutomation && !hasAutomationAccess ? 'Saved. Automatic features stayed off.' : 'Settings saved.', wantsAutomation && !hasAutomationAccess ? 'warning' : 'success');
 });
 
 theme.addEventListener('change', () => applyTheme(theme.value as ThemePreference));
 automaticSuspension.addEventListener('change', syncInactivityControl);
+form.addEventListener('input', updateDirtyState);
+form.addEventListener('change', updateDirtyState);
 
 removeAccessButton.addEventListener('click', async () => {
   removeAccessButton.disabled = true;
-  const settings = await loadSettings();
-  settings.cleaner.automaticCopy = false;
-  settings.suspender.automatic = false;
-  await saveSettings(settings);
-  await removeAutomationAccess();
-  hasAutomationAccess = false;
-  populate(settings);
-  renderPermissionState();
-  removeAccessButton.disabled = false;
-  await sendBackgroundRequest({ type: 'settings-updated' });
-  setStatus(formStatus, 'Website access removed. Manual tools still work.', 'success');
+  try {
+    const settings = await loadSettings();
+    settings.cleaner.automaticCopy = false;
+    settings.suspender.automatic = false;
+    await saveSettings(settings);
+    await removeAutomationAccess();
+    hasAutomationAccess = false;
+    populate(settings);
+    renderPermissionState();
+    await sendBackgroundRequest({ type: 'settings-updated' });
+    markClean('Website access removed.');
+  } catch (error) {
+    showSaveBar(error instanceof Error ? error.message : 'Website access could not be removed.', 'error', true);
+  } finally {
+    removeAccessButton.disabled = false;
+  }
 });
 
 getElement<HTMLButtonElement>('reset-settings').addEventListener('click', async () => {
   if (!window.confirm('Reset every CleanTab setting to its default?')) return;
-  const settings = await resetSettings();
-  populate(settings);
-  await sendBackgroundRequest({ type: 'settings-updated' });
-  setStatus(formStatus, 'Default settings restored.', 'success');
+  try {
+    const settings = await resetSettings();
+    populate(settings);
+    await sendBackgroundRequest({ type: 'settings-updated' });
+    markClean('Defaults restored.');
+  } catch (error) {
+    showSaveBar(error instanceof Error ? error.message : 'Settings could not be reset.', 'error', true);
+  }
 });
 
 void initialize().catch((error) => {
   populate(DEFAULT_SETTINGS);
-  setStatus(formStatus, error instanceof Error ? error.message : 'Settings could not be loaded.', 'error');
+  baseline = formSnapshot();
+  showSaveBar(error instanceof Error ? error.message : 'Settings could not be loaded.', 'error', true);
 });

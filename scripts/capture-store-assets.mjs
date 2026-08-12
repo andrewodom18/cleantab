@@ -49,20 +49,25 @@ try {
   await page.evaluate(() => {
     document.body.style.paddingBottom = '520px';
   });
-  await page.locator('section').filter({ hasText: 'Pause inactive tabs safely' }).evaluate((element) => window.scrollTo(0, element.offsetTop - 84));
+  await page.locator('[aria-labelledby="automation-heading"]').evaluate((element) => window.scrollTo(0, element.offsetTop - 84));
   await page.waitForTimeout(150);
   await page.screenshot({ path: resolve(screenshotDirectory, '02-tab-suspension.png') });
 
-  await page.getByRole('heading', { name: 'Website access' }).evaluate((element) => window.scrollTo(0, element.closest('section').offsetTop - 90));
+  await page.getByText('Exceptions and custom rules').click();
+  await page.locator('.advanced-section').evaluate((element) => window.scrollTo(0, element.offsetTop - 84));
   await page.waitForTimeout(150);
   await page.screenshot({ path: resolve(screenshotDirectory, '03-permission-controls.png') });
 
   await page.getByLabel('Choose theme').selectOption('dark');
+  await page.getByRole('button', { name: 'Save changes' }).click();
+  await page.locator('.advanced-section').evaluate((element) => {
+    element.open = false;
+  });
   await page.evaluate(() => {
     document.body.style.paddingBottom = '';
     window.scrollTo(0, 0);
   });
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(2_000);
   await page.screenshot({ path: resolve(screenshotDirectory, '04-dark-mode.png') });
 
   const previewId = '12345678-1234-1234-1234-123456789abc';

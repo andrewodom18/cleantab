@@ -1,7 +1,7 @@
 @import '../../src/styles/base.css';
 
 body {
-  width: 390px;
+  width: 372px;
 }
 
 .popup-shell {
@@ -10,24 +10,55 @@ body {
   padding: 12px;
 }
 
-.app-header,
-.section-heading,
-.permission-strip,
+.popup-header,
+.panel-heading,
 .brand,
-.button-row {
+.header-action,
+.tab-action,
+.popup-footer {
   display: flex;
   align-items: center;
 }
 
-.app-header,
-.section-heading,
-.permission-strip {
+.popup-header,
+.panel-heading {
   justify-content: space-between;
   gap: 12px;
 }
 
+.popup-header {
+  min-height: 36px;
+  padding: 0 2px;
+}
+
 .brand {
-  gap: 10px;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.brand-mark {
+  width: 30px;
+  height: 30px;
+}
+
+.header-action {
+  min-height: 32px;
+  gap: 6px;
+  border: 0;
+  padding: 5px 7px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 11px;
+}
+
+.header-action svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
 }
 
 h1,
@@ -36,36 +67,50 @@ p {
   margin-top: 0;
 }
 
-h1 {
-  margin-bottom: 0;
-  font-size: 16px;
-  line-height: 1.2;
-}
-
+h1,
 h2 {
   margin-bottom: 0;
   font-size: 17px;
+  line-height: 1.25;
 }
 
-.card {
+.panel {
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 13px;
+  padding: 14px;
   background: var(--bg);
-  box-shadow: 0 1px 0 rgba(25, 30, 38, 0.02);
 }
 
-.url-result {
-  min-height: 84px;
-  margin: 11px 0 9px;
-  border: 1px solid var(--line);
+.state-pill {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: var(--muted);
+  background: var(--surface);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.state-pill[data-tone='success'] {
+  color: var(--success);
+  background: var(--accent-soft);
+}
+
+.state-pill[data-tone='warning'] {
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 12%, transparent);
+}
+
+.link-preview {
+  min-height: 82px;
+  margin: 12px 0 10px;
   border-radius: 10px;
-  padding: 10px;
+  padding: 10px 11px;
   background: var(--surface);
 }
 
 .url-host {
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   font-size: 12px;
   font-weight: 750;
 }
@@ -73,75 +118,104 @@ h2 {
 .url-value {
   display: -webkit-box;
   overflow: hidden;
-  margin-bottom: 7px;
+  margin-bottom: 0;
+  color: var(--muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
+  font-size: 10.5px;
   line-height: 1.45;
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
-.removed {
-  margin-bottom: 0;
-  font-size: 11px;
+.removed-parameters {
+  margin: 6px 0 0;
+  color: var(--accent);
+  font-size: 10.5px;
+  line-height: 1.35;
   overflow-wrap: anywhere;
 }
 
-.count {
-  border-radius: 999px;
-  padding: 4px 8px;
-  color: var(--accent);
-  background: var(--accent-soft);
-  font-size: 11px;
-  font-weight: 750;
+.removed-parameters:empty {
+  display: none;
 }
 
 .full-width {
   width: 100%;
 }
 
-.section-copy {
-  margin: 8px 0 10px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.45;
+.panel .status {
+  min-height: 0;
+  margin-top: 7px;
 }
 
-.button-row {
+.panel .status:empty {
+  display: none;
+}
+
+.tab-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
+  margin-top: 11px;
 }
 
-.button-row button {
-  flex: 1;
-}
-
-.card .status {
-  margin-top: 8px;
-}
-
-.permission-strip {
-  border-radius: 12px;
+.tab-action {
+  min-height: 64px;
+  justify-content: flex-start;
+  gap: 9px;
   padding: 9px 10px;
-  background: var(--surface);
+  text-align: left;
 }
 
-.permission-title {
-  margin-bottom: 2px;
+.tab-action svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.tab-action svg rect {
+  fill: var(--accent);
+  stroke: none;
+}
+
+.tab-action span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tab-action strong {
   font-size: 12px;
-  font-weight: 750;
 }
 
-.permission-copy {
-  max-width: 235px;
-  margin-bottom: 0;
+.tab-action small {
   color: var(--muted);
-  font-size: 11px;
-  line-height: 1.35;
+  font-size: 9.5px;
+  font-weight: 500;
+  line-height: 1.3;
 }
 
-.permission-strip button {
-  min-height: 34px;
-  padding: 6px 10px;
-  font-size: 12px;
+.popup-footer {
+  justify-content: center;
+  gap: 6px;
+  min-height: 26px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.footer-separator {
+  opacity: 0.55;
 }

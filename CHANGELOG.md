@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Redesigned the popup around a single link-cleaning action and two compact tab-suspension actions.
+- Redesigned Settings as a responsive full-tab experience instead of a cramped Chrome details dialog.
+- Added a contextual Save bar that appears only when settings change.
+- Reduced permanent permission and reset controls while preserving clear status and access removal.
+
 ## 1.0.1 — 2026-08-11
 
 - Simplified page, link, and selection cleaning into one adaptive context-menu action.

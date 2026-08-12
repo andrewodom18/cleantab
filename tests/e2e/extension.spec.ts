@@ -59,24 +59,32 @@ test.afterAll(async () => {
 test('loads the popup and options UI from the packaged extension', async ({ context, extensionId }) => {
   const popup = await context.newPage();
   await popup.goto(`chrome-extension://${extensionId}/popup.html`);
-  await expect(popup.getByRole('heading', { name: 'Cleaner links. Calmer tabs.' })).toBeVisible();
-  await expect(popup.getByText('Local only')).toBeVisible();
-  await expect(popup.getByRole('heading', { name: 'Suspend tabs' })).toBeVisible();
+  await expect(popup.getByRole('heading', { name: 'Clean this link' })).toBeVisible();
+  await expect(popup.getByRole('heading', { name: 'Pause unused tabs' })).toBeVisible();
+  await expect(popup.getByText('Everything stays local')).toBeVisible();
+  const settingsButton = popup.getByRole('button', { name: 'Open CleanTab settings' });
+  await expect(settingsButton).toBeVisible();
   expect(await popup.locator('.popup-shell').evaluate((element) => element.getBoundingClientRect().height)).toBeLessThanOrEqual(600);
 
-  const options = await context.newPage();
-  await options.goto(`chrome-extension://${extensionId}/options.html`);
-  await expect(options.getByRole('heading', { name: 'Choose what CleanTab handles automatically.' })).toBeVisible();
-  await expect(options.getByText('Website access not granted')).toBeVisible();
+  const optionsPromise = context.waitForEvent('page');
+  await settingsButton.click();
+  const options = await optionsPromise;
+  await options.waitForLoadState();
+  await expect(options).toHaveURL(`chrome-extension://${extensionId}/options.html`);
+  await expect(options.getByRole('heading', { name: 'Settings' })).toBeVisible();
+  await expect(options.getByText('Not granted', { exact: true })).toBeVisible();
   await expect(options.getByText('Exceptions and custom rules')).toBeVisible();
   await expect(options.getByLabel('Do not clean these domains')).not.toBeVisible();
+  expect(await options.evaluate(() => chrome.runtime.getManifest().options_ui?.open_in_tab)).toBe(true);
+  await expect(options.getByRole('button', { name: 'Save changes' })).not.toBeVisible();
 
-  const copySwitch = options.getByRole('switch', { name: /Automatically clean copied URLs/ });
+  const copySwitch = options.getByRole('switch', { name: /Clean copied links/ });
   await copySwitch.focus();
   await options.keyboard.press('Space');
   await expect(copySwitch).toBeChecked();
+  await expect(options.getByRole('button', { name: 'Save changes' })).toBeVisible();
 
-  const suspensionSwitch = options.getByRole('switch', { name: /Automatically suspend inactive tabs/ });
+  const suspensionSwitch = options.getByRole('switch', { name: /Suspend inactive tabs/ });
   await expect(options.getByLabel('Suspend after')).toBeDisabled();
   await suspensionSwitch.click();
   await expect(options.getByLabel('Suspend after')).toBeEnabled();
@@ -94,7 +102,7 @@ test('persists validated settings and applies the chosen theme', async ({ contex
   await page.getByLabel('Do not clean these domains').fill('example.com');
   await page.getByLabel('Additional parameters to remove').fill('campaign_id');
   await page.getByLabel('Choose theme').selectOption('dark');
-  await page.getByRole('button', { name: 'Save settings' }).click();
+  await page.getByRole('button', { name: 'Save changes' }).click();
   await expect(page.getByText('Settings saved.')).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.reload();

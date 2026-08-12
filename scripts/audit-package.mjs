@@ -20,6 +20,7 @@ if (!sameMembers(manifest.permissions, expectedRequired)) failures.push(`unexpec
 if (!sameMembers(manifest.optional_permissions, expectedOptional)) failures.push(`unexpected optional permissions: ${manifest.optional_permissions}`);
 if (!sameMembers(manifest.optional_host_permissions, expectedOrigins)) failures.push(`unexpected optional host permissions: ${manifest.optional_host_permissions}`);
 if (manifest.host_permissions?.length) failures.push('required host permissions are not allowed');
+if (manifest.options_ui?.page !== 'options.html' || manifest.options_ui?.open_in_tab !== true) failures.push('settings must open in a full browser tab');
 
 for (const size of ['16', '32', '48', '128']) {
   try {
